@@ -78,7 +78,7 @@
                         (apply #'start-process "stack" buffer "stack" "ghci"
                                arguments))))
         (process-send-string process ":set -fobject-code\n")
-        (process-send-string process ":set prompt \"\4\"\n")
+        (process-send-string process ":set prompt \"\\4\"\n")
         (with-current-buffer buffer
           (setq flycheck-stack-arguments arguments)
           (setq flycheck-stack-callbacks
