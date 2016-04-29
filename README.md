@@ -78,12 +78,12 @@ Use `M-x flycheck-stack-targets` to set the targets. Examples:
 
 * `M-x flycheck-stack-targets RET my-package1 other-package` -- Load
   up two packages.
-* `M-x flycheck-stack-targets RET my-package1:test:my-test-suite' --
+* `M-x flycheck-stack-targets RET my-package1:test:my-test-suite` --
   Load up just `my-test-suite` from the `my-package1` package.
-* `M-x flycheck-stack-targets RET my-package1:my-test-suite' --
+* `M-x flycheck-stack-targets RET my-package1:my-test-suite` --
   Load up just `my-test-suite` from the `my-package1` package because
   it's obvious that it's the test suite.
-* Finally, `M-x flycheck-stack-targets RET :my-test-suite' --
+* Finally, `M-x flycheck-stack-targets RET :my-test-suite` --
   Load up just `my-test-suite` from the `my-package1` package because
   it's obvious which one we mean.
 
