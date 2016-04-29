@@ -76,7 +76,7 @@ specifying targets](http://docs.haskellstack.org/en/stable/build_command/#target
 
 Use `M-x flycheck-stack-targets` to set the targets. Examples:
 
-* `M-x flycheck-stack-targets RET my-package1 other-package' -- Load
+* `M-x flycheck-stack-targets RET my-package1 other-package` -- Load
   up two packages.
 * `M-x flycheck-stack-targets RET my-package1:test:my-test-suite' --
   Load up just `my-test-suite` from the `my-package1` package.
