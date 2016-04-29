@@ -54,7 +54,8 @@
   (interactive)
   (with-current-buffer (flycheck-stack-get-buffer-create)
     (when (get-buffer-process (current-buffer))
-      (kill-process (get-buffer-process (current-buffer))))
+      (kill-process (get-buffer-process (current-buffer)))
+      (delete-process (get-buffer-process (current-buffer))))
     (kill-buffer (current-buffer))))
 
 (defun flycheck-stack-get-worker-create (&optional targets)
@@ -66,16 +67,17 @@
                             "--no-build"))
              (main-is (list))
              (process (with-current-buffer buffer
-                        (message "Booting up: stack ghci")
+                        (message "Booting up stack ghci ...")
                         (apply #'start-process "stack" buffer "stack" "ghci"
                                (append options
                                        targets main-is)))))
+        (process-send-string process ":set -fobject-code\n")
         (process-send-string process ":set prompt \"\4\"\n")
         (with-current-buffer buffer
           (setq flycheck-stack-callbacks
                 (list (cons nil
                             (lambda (_state _msg)
-                              (message "Booted up: stack ghci"))))))
+                              (message "Booted up stack ghci!"))))))
         (set-process-filter process
                             (lambda (process string)
                               (when (buffer-live-p (process-buffer process))
@@ -171,12 +173,14 @@ warnings, adding CHECKER and BUFFER to each one."
                           (concat file ":" location-raw ": x")))
                (line (plist-get location :line))
                (column (plist-get location :col)))
-          (setq messages
-                (cons (flycheck-error-new-at
-                       line column type msg
-                       :checker checker
-                       :buffer buffer)
-                      messages))))
+          (when (string= (buffer-file-name buffer)
+                         file)
+            (setq messages
+                  (cons (flycheck-error-new-at
+                         line column type msg
+                         :checker checker
+                         :buffer buffer)
+                        messages)))))
       messages)))
 
 (flycheck-define-generic-checker 'stack
