@@ -29,6 +29,10 @@
   "List of callbacks waiting for output. FIFO.")
 (make-variable-buffer-local 'flycheck-stack-callbacks)
 
+(defvar flycheck-stack-arguments (list)
+  "Arguments used to call the stack process.")
+(make-variable-buffer-local 'flycheck-stack-arguments)
+
 (defun flycheck-stack-targets ()
   "Set the targets to use for stack ghci."
   (interactive)
@@ -66,14 +70,17 @@
       (let* ((options (list "--no-load"
                             "--no-build"))
              (main-is (list))
+             (arguments (append options
+                                targets
+                                main-is))
              (process (with-current-buffer buffer
                         (message "Booting up stack ghci ...")
                         (apply #'start-process "stack" buffer "stack" "ghci"
-                               (append options
-                                       targets main-is)))))
+                               arguments))))
         (process-send-string process ":set -fobject-code\n")
         (process-send-string process ":set prompt \"\4\"\n")
         (with-current-buffer buffer
+          (setq flycheck-stack-arguments arguments)
           (setq flycheck-stack-callbacks
                 (list (cons source-buffer
                             (lambda (source-buffer _msg)
@@ -98,7 +105,15 @@
                                   (when (not (process-live-p process))
                                     (switch-to-buffer (process-buffer process))
                                     (goto-char (point-max))
-                                    (insert change)))))
+                                    (insert "The process ended. Here is the reason:\n"
+                                            "  " change
+                                            "\n")
+                                    (insert "For troubleshooting purposes, here are the arguments used to launch stack ghci:\n"
+                                            (format "  stack ghci %s"
+                                                    (mapconcat #'identity
+                                                               flycheck-stack-arguments
+                                                               " "))
+                                            "\n\n")))))
         buffer))))
 
 (defun flycheck-stack-read-buffer ()
