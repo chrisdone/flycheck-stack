@@ -36,7 +36,7 @@
                                " "
                                t)))
     (flycheck-stack-destroy)
-    (flycheck-stack-get-worker-create targets)))
+    (flycheck-stack-get-worker-create targets (current-buffer))))
 
 (defun flycheck-stack-buffer ()
   "Get the worker buffer for the current directory."
@@ -58,7 +58,7 @@
       (delete-process (get-buffer-process (current-buffer))))
     (kill-buffer (current-buffer))))
 
-(defun flycheck-stack-get-worker-create (&optional targets)
+(defun flycheck-stack-get-worker-create (&optional targets source-buffer)
   "Start a GHCi worker."
   (let* ((buffer (flycheck-stack-get-buffer-create)))
     (if (get-buffer-process buffer)
@@ -75,8 +75,15 @@
         (process-send-string process ":set prompt \"\4\"\n")
         (with-current-buffer buffer
           (setq flycheck-stack-callbacks
-                (list (cons nil
-                            (lambda (_state _msg)
+                (list (cons source-buffer
+                            (lambda (source-buffer _msg)
+                              (when source-buffer
+                                (with-current-buffer source-buffer
+                                    (when flycheck-mode
+                                      (run-with-timer 0 nil
+                                                      'flycheck-stack-call-in-buffer
+                                                      (current-buffer)
+                                                      'flycheck-buffer))))
                               (message "Booted up stack ghci!"))))))
         (set-process-filter process
                             (lambda (process string)
@@ -182,6 +189,12 @@ warnings, adding CHECKER and BUFFER to each one."
                          :buffer buffer)
                         messages)))))
       messages)))
+
+
+(defun flycheck-stack-call-in-buffer (buffer func &rest args)
+  "Utility function which calls FUNC in BUFFER with ARGS."
+  (with-current-buffer buffer
+    (apply func args)))
 
 (flycheck-define-generic-checker 'stack
   "A syntax and type checker for Haskell using a stack ghci
