@@ -105,7 +105,10 @@
                                   (when (not (process-live-p process))
                                     (switch-to-buffer (process-buffer process))
                                     (goto-char (point-max))
-                                    (insert "The process ended. Here is the reason:\n"
+                                    (insert "\n---\n
+This is the buffer where Emacs talks to stack ghci. It's normally hidden,
+but a problem occcured.\n")
+                                    (insert "\nThe process ended. Here is the reason:\n"
                                             "  " change
                                             "\n")
                                     (insert "For troubleshooting purposes, here are the arguments used to launch stack ghci:\n"
@@ -113,7 +116,8 @@
                                                     (mapconcat #'identity
                                                                flycheck-stack-arguments
                                                                " "))
-                                            "\n\n")))))
+                                            "\n\n")
+                                    (insert "You can kill this buffer when you're ready.\n")))))
         buffer))))
 
 (defun flycheck-stack-read-buffer ()
