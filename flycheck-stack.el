@@ -106,7 +106,7 @@ the given targets."
   (let* ((root (flycheck-stack-project-root))
          (default-directory root))
     (with-current-buffer
-        (get-buffer-create (concat "" ;; FIXME: Put space back.
+        (get-buffer-create (concat " "
                                    (file-name-nondirectory root)
                                    " "
                                    root))
