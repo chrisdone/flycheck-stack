@@ -2,7 +2,7 @@
 
 A flycheck checker that uses stack ghci
 
-## Requirements:
+## Requirements
 
 * [stack](http://docs.haskellstack.org/en/stable/install_and_upgrade/)
 * [haskell-mode](https://github.com/haskell/haskell-mode)
