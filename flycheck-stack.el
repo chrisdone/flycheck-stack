@@ -79,11 +79,11 @@
                             (lambda (source-buffer _msg)
                               (when source-buffer
                                 (with-current-buffer source-buffer
-                                    (when flycheck-mode
-                                      (run-with-timer 0 nil
-                                                      'flycheck-stack-call-in-buffer
-                                                      (current-buffer)
-                                                      'flycheck-buffer))))
+                                  (when flycheck-mode
+                                    (run-with-timer 0 nil
+                                                    'flycheck-stack-call-in-buffer
+                                                    (current-buffer)
+                                                    'flycheck-buffer))))
                               (message "Booted up stack ghci!"))))))
         (set-process-filter process
                             (lambda (process string)
@@ -92,6 +92,13 @@
                                   (goto-char (point-max))
                                   (insert string)
                                   (flycheck-stack-read-buffer)))))
+        (set-process-sentinel process
+                              (lambda (process change)
+                                (when (buffer-live-p (process-buffer process))
+                                  (when (not (process-live-p process))
+                                    (switch-to-buffer (process-buffer process))
+                                    (goto-char (point-max))
+                                    (insert change)))))
         buffer))))
 
 (defun flycheck-stack-read-buffer ()
