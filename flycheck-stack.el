@@ -15,6 +15,11 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;
+;; Just a flycheck mode that enables the use of stack ghci to report
+;; error messages.
+
 ;;; Code:
 
 (require 'flycheck)
@@ -144,7 +149,8 @@ project, or the global one."
                        (concat ":l " (buffer-file-name) "\n")))
 
 (defun flycheck-stack-parse-errors-warnings (checker buffer string)
-  "Parse from the given string a list of flycheck errors and warnings."
+  "Parse from the given STRING a list of flycheck errors and
+warnings, adding CHECKER and BUFFER to each one."
   (with-temp-buffer
     (insert string)
     (goto-char (point-min))
@@ -183,3 +189,5 @@ worker process."
 (add-to-list 'flycheck-checkers 'stack)
 
 (provide 'flycheck-stack)
+
+;;; flycheck-stack.el ends here
