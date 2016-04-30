@@ -2,6 +2,8 @@
 
 ;; Copyright (c) 2016 Chris Done. All rights reserved.
 
+;; Package-Requires: ((flycheck "26") (haskell-mode "13"))
+
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 3, or (at your option)
