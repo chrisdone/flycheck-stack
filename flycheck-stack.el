@@ -25,7 +25,7 @@
 ;;; Code:
 
 (require 'flycheck)
-(require 'haskell-process)
+(require 'haskell-interactive-mode)
 
 (defvar flycheck-stack-callbacks (list)
   "List of callbacks waiting for output. FIFO.")
