@@ -137,8 +137,9 @@ but a problem occcured.\n")
       (let ((string (buffer-substring (point-min) (1- (point)))))
         (if next-callback
             (funcall func state string)
-          (warn "Received output but no callback in `flycheck-stack-callbacks': %S"
-                string))))
+          (when debug-on-error
+            (warn "Received output but no callback in `flycheck-stack-callbacks': %S"
+                  string)))))
     (delete-region (point-min) (point))))
 
 (defun flycheck-stack-get-buffer-create ()
