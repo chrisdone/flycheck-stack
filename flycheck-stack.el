@@ -35,6 +35,10 @@
   "Arguments used to call the stack process.")
 (make-variable-buffer-local 'flycheck-stack-arguments)
 
+(defvar flycheck-stack-project-root nil
+  "The project root of the current buffer.")
+(make-variable-buffer-local 'flycheck-stack-project-root)
+
 (defun flycheck-stack-targets ()
   "Set the targets to use for stack ghci."
   (interactive)
@@ -153,15 +157,18 @@ the given targets."
 (defun flycheck-stack-project-root ()
   "Get the directory where the stack.yaml is placed for this
 project, or the global one."
-  (with-temp-buffer
-    (save-excursion
-      (call-process "stack" nil
-                    (current-buffer)
-                    nil
-                    "path"
-                    "--project-root"
-                    "--verbosity" "silent"))
-    (buffer-substring (line-beginning-position) (line-end-position))))
+  (if flycheck-stack-project-root
+      flycheck-stack-project-root
+    (setq flycheck-stack-project-root
+          (with-temp-buffer
+            (save-excursion
+              (call-process "stack" nil
+                            (current-buffer)
+                            nil
+                            "path"
+                            "--project-root"
+                            "--verbosity" "silent"))
+            (buffer-substring (line-beginning-position) (line-end-position))))))
 
 (defun flycheck-stack-check (checker cont)
   "Run a check and pass the status onto CONT."
@@ -217,7 +224,6 @@ warnings, adding CHECKER and BUFFER to each one."
                          :buffer buffer)
                         messages)))))
       messages)))
-
 
 (defun flycheck-stack-call-in-buffer (buffer func &rest args)
   "Utility function which calls FUNC in BUFFER with ARGS."
