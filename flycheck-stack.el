@@ -68,6 +68,12 @@
       (delete-process (get-buffer-process (current-buffer))))
     (kill-buffer (current-buffer))))
 
+(defun flycheck-stack-reload ()
+  "Restart the worker process to reflect the latest project configuration."
+  (interactive)
+  (flycheck-stack-destroy)
+  (flycheck-buffer))
+
 (defun flycheck-stack-get-worker-create (&optional targets source-buffer)
   "Start a GHCi worker."
   (let* ((buffer (flycheck-stack-get-buffer-create)))
