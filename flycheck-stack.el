@@ -60,7 +60,7 @@
   (get-buffer-process (flycheck-stack-buffer)))
 
 (defun flycheck-stack-destroy ()
-  "Stop the current worker process and kill its associated."
+  "Stop the current worker process and kill its associated buffer."
   (interactive)
   (with-current-buffer (flycheck-stack-get-buffer-create)
     (when (get-buffer-process (current-buffer))
